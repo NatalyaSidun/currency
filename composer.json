@@ -18,7 +18,8 @@
         "yiisoft/yii2": "^2.0.13",
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
-        "bower-asset/jquery": "^2.1"
+        "bower-asset/jquery": "^2.1",
+        "linslin/yii2-curl": "^1.5"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

@@ -48,11 +48,11 @@ AppAsset::register($this);
                             <i class="fa fa-user fa-2x"></i>
                           </span>
 
-                            <span class="hidden-sm hidden-md">Здравствуйте, администратор.</span>
+                            <span class="hidden-sm hidden-md">Вітаю, адміністратора.</span>
                         </a>
                     </li>
                     <li class="logout">
-                        <button class="btn btn-info btnLogout">Выйти <i class="fa fa-sign-out"></i>
+                        <button class="btn btn-info btnLogout">Вийти <i class="fa fa-sign-out"></i>
                          </button>
                     </li>
                 </ul>
@@ -61,17 +61,17 @@ AppAsset::register($this);
                     <ul>
                         <li>
                             <a href="<?php echo Yii::$app->urlManager->createUrl('methods/medium'); ?>">
-                                Прогноз по методу скользящего среднего
+                                Прогноз методом ковзного середнього
                             </a>
                         </li>
                         <li>
                             <a href="<?php echo Yii::$app->urlManager->createUrl('methods/holt-and-braun'); ?>">
-                                Прогноз по методу Хольта и Брауна
+                                Прогноз методом Хольта-Брауна
                             </a>
                         </li>
                         <li>
                             <a href="<?php echo Yii::$app->urlManager->createUrl('methods/vinters'); ?>">
-                                Прогноз по методу Винтерса
+                                Прогноз методом Вінтерса
                             </a>
                         </li>
                     </ul>
@@ -94,34 +94,34 @@ AppAsset::register($this);
 <!--                                    <i class="glyphicon glyphicon-th-large icon text-success"></i>-->
 <!--                                    <i class="glyphicon glyphicon-calendar icon text-info-dker"></i>-->
                                     <i class="fa fa-calendar"></i>
-                                    <span class="font-bold">Изменить валюту</span>
+                                    <span class="font-bold">Змінити валюту</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="<?php echo Yii::$app->urlManager->createUrl('methods/optimal'); ?>">
 
                                     <i class="fa fa-line-chart"></i>
-                                    <span class="font-bold">Оптимальный прогноз</span>
+                                    <span class="font-bold">Оптимальний прогноз</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="<?php echo Yii::$app->urlManager->createUrl('currencies/get-exchange-rates'); ?>">
                                     <i class="fa fa-area-chart"></i>
-                                    <span class="font-bold">Архив курса</span>
+                                    <span class="font-bold">Архів курсу</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="<?php echo Yii::$app->urlManager->createUrl('currencies/get-forecasts'); ?>">
 <!--                                    <i class="glyphicon glyphicon-list"></i>-->
                                     <i class="glyphicon glyphicon-signal"></i>
-                                    <span class="font-bold">Архив прогнозов</span>
+                                    <span class="font-bold">Архів прогнозів</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="<?php echo Yii::$app->urlManager->createUrl('methods/find-optimal'); ?>">
 <!--                                    <i class="glyphicon glyphicon-list"></i>-->
                                     <i class="fa fa-bar-chart"></i>
-                                    <span class="font-bold">Прогнозы vs Курсы</span>
+                                    <span class="font-bold">Прогнози vs Курси</span>
                                 </a>
                             </li>
                             <li>
@@ -133,12 +133,12 @@ AppAsset::register($this);
                             <li>
                                 <a href="<?php echo Yii::$app->urlManager->createUrl('currencies/info'); ?>">
                                     <i class="fa fa-info"></i>
-                                    <span class="font-bold">Справка</span>
+                                    <span class="font-bold">Довідка</span>
                                 </a>
                             </li> <li>
                                 <a href="<?php echo Yii::$app->urlManager->createUrl('currencies/about'); ?>">
                                     <i class="glyphicon glyphicon-briefcase icon"></i>
-                                    <span class="font-bold">О программе</span>
+                                    <span class="font-bold">Про программу</span>
                                 </a>
                             </li>
 

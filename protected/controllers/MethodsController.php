@@ -418,11 +418,9 @@ class MethodsController extends Controller
             ->orderBy('date DESC')
             ->limit(1)
             ->one();
-
         $dayBefore = $lastDay->date;
         $date1 = str_replace('-', '/', $dayBefore);
         $dateToday = date('Y-m-d',strtotime($date1 . "+1 days"));
-
         switch($id_currency){  //в зависимости от валюті на сколько округлять
             case 1:
                 $round = 2;

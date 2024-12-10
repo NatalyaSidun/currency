@@ -40,10 +40,10 @@ myGeneric.checkFields = function(elem) {
 //show errors
 myGeneric.outputErrors = function(attrType, element) {
     errorsArray = {
-        "text": "Поле должно быть заполнено",
-        "email": "Неправильный формат email",
-        "pass": "Поле должно быть заполнено",
-        "number": "Неверный формат"
+        "text": "Поле повинно бути заповнено",
+        "email": "Неправильний формат",
+        "pass": "Поле повинно бути заповнено",
+        "number": "Неравильний формат"
     };
     $(element).after('<div class="errors">' + errorsArray[attrType] + '</div>');
 }
@@ -58,7 +58,7 @@ myGeneric.login = function() {
             var form = $(this).parents("form");
             $.getJSON("/ajax/login", {"login": $(form).find('[name="login"]').val(), "pass": $(form).find('[name="pass"]').val()}, function(response) {
                 $(".alreadyExist").remove();
-                if (response == "Неправильный логин или пароль") {
+                if (response == "Неправильний логін або пароль") {
                     $(form).prepend("<p class='alreadyExist'>" + response + "</p>");
                     $(form).find('[name="pass"]').val('');
                 } else {
@@ -79,30 +79,42 @@ myGeneric.logout = function() {
 
 myGeneric.getRates = function() {
     if($("div").is(".chart_container")){
-        $.getJSON("/ajax/get-exchange-rates", {}, function(response) {
-            var data = [];
-            for(var i=0; i<response["data"].length; i++){
-                data[i] = response["data"][i]["value"];
-            }
+        $.ajax({
+            url: "/ajax/get-exchange-rates",
+            dataType: 'json'}).
+        success(function(response) {
+            console.log(response);
             $('.chart_container').highcharts({
                 chart: {
                     zoomType: 'x'
                 },
                 title: {
-                    text: 'Колебания валютной пары '+ response["currency"]["title"] + ' c 1 Января 2015'
+                    text: 'Коливання валютної пари '+ response.currency.title
                 },
                 subtitle: {
                     text: document.ontouchstart === undefined ?
-                        'Нажмите и перетащите курсор в конец нужного участка, чтоб увеличить' :
+                        'Натисніть і перетягніть курсор в кінець обраної ділянким, щоб збільшити' :
                         'Pinch the chart to zoom in'
                 },
                 xAxis: {
                     type: 'datetime',
-                    minRange: 14 * 24 * 3600000 // fourteen days
+                    // This is from the Highcharts Stock - Stock license required
+                    ordinal: true,
+                    labels: {
+                        // Format the date
+                        formatter: function() {
+                            return Highcharts.dateFormat('%Y-%m-%d', this.value);
+                        }
+                    },
+                    tickPositioner: function() {
+                        return response.dates.map(function(date) {
+                            return Date.parse(date);
+                        });
+                    }
                 },
                 yAxis: {
                     title: {
-                        text: 'Курс Валюты, '+ response["currency"]["valuta"]
+                        text: 'Курс Валюты, '+ response.currency.valuta
                     }
                 },
                 legend: {
@@ -132,10 +144,7 @@ myGeneric.getRates = function() {
 
                 series: [{
                     type: 'area',
-                    name: "За 1$ - "+response["currency"]["valuta"],
-                    pointInterval: 24 * 3600 * 1000,
-                    pointStart: Date.UTC(2015, 0, 1),
-                    data: data
+                    data: response.data
                 }]
             });
         });

@@ -1,4 +1,4 @@
-<?php
+Ï<?php
 /**
  * Created by PhpStorm.
  * User: Екатерина

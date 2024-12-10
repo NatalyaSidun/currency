@@ -12,9 +12,9 @@ $this->title = "Архив прогнозов";
 
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation"><a href="#medium" aria-controls="medium" role="tab" data-toggle="tab">Метод скользящего среднего</a></li>
-        <li role="presentation"><a href="#holt" aria-controls="holt" role="tab" data-toggle="tab">Метод Хольта и Брауна</a></li>
-        <li role="presentation"><a href="#vinters" aria-controls="vinters" role="tab" data-toggle="tab">Метод Винтерса</a></li>
+        <li role="presentation"><a href="#medium" aria-controls="medium" role="tab" data-toggle="tab">Метод ковзного середнього</a></li>
+        <li role="presentation"><a href="#holt" aria-controls="holt" role="tab" data-toggle="tab">Метод Хольта і Брауна</a></li>
+        <li role="presentation"><a href="#vinters" aria-controls="vinters" role="tab" data-toggle="tab">Метод Вінтерса</a></li>
     </ul>
 
     <!-- Tab panes -->

@@ -11,6 +11,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\Currencies;
+use yii\helpers\Json;
 use app\models\Forecasts;
 use app\models\ExchangeRates;
 use yii\web\Session;
@@ -38,66 +39,12 @@ class CurrenciesController extends Controller
             ->limit(1)
             ->all();
 
-        $date = $exchangeLastRate[0]->date;
-        $date1 = str_replace('-', '/', $date);
-        $date = date('Y-m-d',strtotime($date1 . "+1 days"));
+        if ($exchangeLastRate) {
+            $date = $exchangeLastRate[0]->date;
 
-//        while($date < $today){
-//            $arrDate = explode("-", $date);
-//            $dataFormat = $arrDate[2].$arrDate[1].$arrDate[0];
-//
-//            $url = "http://pfsoft.com.ua/service/currency/?date=".$dataFormat;
-//            $xml = xml_parser_create(); //создаёт XML-разборщик
-//            xml_parser_set_option($xml, XML_OPTION_SKIP_WHITE, 1);  //устанавливает опции XML-разборщика
-//            xml_parse_into_struct($xml, file_get_contents($url), $element, $index); //разбирает XML-данные в структуру массива
-//            xml_parser_free($xml);  //освобождает XML-разборщик
-//
-//            $exchange_rates = new ExchangeRates();
-//            $exchange_rates->date = $date;
-//            $exchange_rates->id_currency = 1;
-//            $exchange_rates->value = round($element[41]["value"]/100, 2);
-//            $exchange_rates->save();  // equivalent to $customer->insert();
-//
-//            $date1 = str_replace('-', '/', $date);
-//            $date = date('Y-m-d',strtotime($date1 . "+1 days"));
-//        }
-
-        if($exchangeLastRate[0]->date < $today){
-            $url = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.xchange%20where%20pair%20in%20%28%22USDEUR%22,%22USDBYR%22,%22USDGBP%22,%22USDUAH%22%29&env=store://datatables.org/alltableswithkeys';
-            $xml = xml_parser_create(); //создаёт XML-разборщик
-            xml_parser_set_option($xml, XML_OPTION_SKIP_WHITE, 1);  //устанавливает опции XML-разборщика
-            xml_parse_into_struct($xml, file_get_contents($url), $element, $index); //разбирает XML-данные в структуру массива
-            xml_parser_free($xml);  //освобождает XML-разборщик
-
-            //Для фунта стерлингов
-            $exchange_rates = new ExchangeRates();
-            $exchange_rates->date = $today;
-            $exchange_rates->id_currency = 4;
-            $exchange_rates->value = $element[20]["value"];
-            $exchange_rates->save();  // equivalent to $customer->insert();
-
-            //Для евро
-            $exchange_rates = new ExchangeRates();
-            $exchange_rates->date = $today;
-            $exchange_rates->id_currency = 2;
-            $exchange_rates->value = $element[4]["value"];
-            $exchange_rates->save();  // equivalent to $customer->insert();
-
-            //Для гривны
-            $exchange_rates = new ExchangeRates();
-            $exchange_rates->date = $today;
-            $exchange_rates->id_currency = 1;
-            $exchange_rates->value = round($element[28]["value"], 2);
-            $exchange_rates->save();  // equivalent to $customer->insert();
-
-            //Для белорусского рубля
-            $exchange_rates = new ExchangeRates();
-            $exchange_rates->date = $today;
-            $exchange_rates->id_currency = 3;
-            $exchange_rates->value = $element[12]["value"];
-            $exchange_rates->save();  // equivalent to $customer->insert();
+            $date1 = str_replace('-', '/', $date);
+            $date = date('Y-m-d',strtotime($date1 . "+1 days"));
         }
-
         $exchangeRates = ExchangeRates::find()
             ->where(["id_currency" => $session['cur_id']])
             ->orderBy('date DESC')
@@ -111,6 +58,130 @@ class CurrenciesController extends Controller
         ]);
     }
 
+    public function actionLoadExchangeRates(){
+        $today = date("Y-m-d");
+        $session = new Session();
+        $session->open();
+
+        $exchangeLastRate = ExchangeRates::find()
+            ->where(["id_currency" => $session['cur_id']])
+            ->orderBy('date DESC')
+            ->limit(1)
+            ->all();
+
+        if ($exchangeLastRate) {
+            $date = $exchangeLastRate[0]->date;
+
+            $date1 = str_replace('-', '/', $date);
+            $date = date('Y-m-d',strtotime($date1 . "+1 days"));
+        }
+
+        if(!$exchangeLastRate || $exchangeLastRate[0]->date < $today){
+
+
+            $url = "https://query1.finance.yahoo.com/v8/finance/chart/EUR=X?period1=1671404400&period2=1733353200&interval=1d&includePrePost=true&events=div%7Csplit%7Cearn&useYfid=true&lang=en-US&region=US";
+            // Initialize cURL session
+            $ch = curl_init($url);
+
+            // Set options
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/x-www-form-urlencoded',
+                'Accept: application/json',
+                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',));
+            // Execute and get response
+            $response = curl_exec($ch);
+
+            // Check for errors
+            if (curl_errno($ch)) {
+                Yii::error("Curl error: " . curl_error($ch));
+                curl_close($ch);
+                return $this->render('error', ['message' => curl_error($ch)]);
+            }
+
+            curl_close($ch);
+            $result = JSON::decode($response);
+
+            //Euro
+            foreach ($result['chart']['result'][0]['timestamp'] as $key => $value) {
+                if (is_null($result['chart']['result'][0]['indicators']['adjclose'][0]['adjclose'][$key])) {
+                    continue;
+                }
+                $exchange_rates = new ExchangeRates();
+                $exchange_rates->date = date('Y-m-d', $value); ;
+                $exchange_rates->id_currency = 2;
+                $exchange_rates->value =  !is_null($result['chart']['result'][0]['indicators']['adjclose'][0]['adjclose'][$key]) ? round($result['chart']['result'][0]['indicators']['adjclose'][0]['adjclose'][$key], 2): 0;
+                $exchange_rates->save();  // equivalent to $customer->insert();
+            }
+
+            $url = "https://query1.finance.yahoo.com/v8/finance/chart/EUR=X?period1=1671404400&period2=1733353200&interval=1d&includePrePost=true&events=div%7Csplit%7Cearn&useYfid=true&lang=en-US&region=US";
+            // Initialize cURL session
+            $ch = curl_init($url);
+
+            // Set options
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/x-www-form-urlencoded',
+                'Accept: application/json',
+                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',));
+            // Execute and get response
+            $response = curl_exec($ch);
+
+            // Check for errors
+            if (curl_errno($ch)) {
+                Yii::error("Curl error: " . curl_error($ch));
+                curl_close($ch);
+                return $this->render('error', ['message' => curl_error($ch)]);
+            }
+
+            curl_close($ch);
+            $result = JSON::decode($response);
+            //Для фунта стерлингов
+            foreach ($result['chart']['result'][0]['timestamp'] as $key => $value) {
+                if (is_null($result['chart']['result'][0]['indicators']['adjclose'][0]['adjclose'][$key])) {
+                    continue;
+                }
+                $exchange_rates = new ExchangeRates();
+                $exchange_rates->date = date('Y-m-d', $value); ;
+                $exchange_rates->id_currency = 4;
+                $exchange_rates->value = round($result['chart']['result'][0]['indicators']['adjclose'][0]['adjclose'][$key], 2);
+                $exchange_rates->save();  // equivalent to $customer->insert();
+            }
+
+            $url = "https://query1.finance.yahoo.com/v8/finance/chart/UAH=X?period1=1673823600&period2=1733353200&interval=1d&includePrePost=true&events=div%7Csplit%7Cearn&useYfid=true&lang=en-US&region=US";
+            // Initialize cURL session
+            $ch = curl_init($url);
+
+            // Set options
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/x-www-form-urlencoded',
+                'Accept: application/json',
+                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',));
+            // Execute and get response
+            $response = curl_exec($ch);
+
+            // Check for errors
+            if (curl_errno($ch)) {
+                Yii::error("Curl error: " . curl_error($ch));
+                curl_close($ch);
+                return $this->render('error', ['message' => curl_error($ch)]);
+            }
+
+            curl_close($ch);
+            $result = JSON::decode($response);
+            foreach ($result['chart']['result'][0]['timestamp'] as $key => $value) {
+                if (is_null($result['chart']['result'][0]['indicators']['adjclose'][0]['adjclose'][$key])) {
+                    continue;
+                }
+                $exchange_rates = new ExchangeRates();
+                $exchange_rates->date = date('Y-m-d', $value); ;
+                $exchange_rates->id_currency = 1;
+                $exchange_rates->value = round($result['chart']['result'][0]['indicators']['adjclose'][0]['adjclose'][$key], 2);
+                $exchange_rates->save();  // equivalent to $customer->insert();
+            }
+        }
+    }
     public function  actionGetForecasts(){ //метод получения прогнозов
         return $this->render('get_forecasts', [
         ]);

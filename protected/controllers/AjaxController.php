@@ -13,6 +13,7 @@ use app\models\ForecastsVinters;
 use Yii;
 use yii\web\Controller;
 use app\models\ExchangeRates;
+use yii\helpers\Json;
 use app\models\ForecastsHolt;
 use app\models\Currencies;
 use app\models\OptimalForecast;
@@ -38,8 +39,15 @@ class AjaxController extends Controller
             ->where(["id_currency"=> $session['cur_id']])
             ->orderBy('date')
             ->all();
+        $exchangeData = [];
+        $dates = [];
+        foreach ($exchangeRates as $exchangeRate){
+            $exchangeData[] = [$exchangeRate->date, $exchangeRate->value];
+            $dates[] = $exchangeRate->date;
+        }
 
-        $data = ['data' => $exchangeRates, 'currency' => $currency];
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $data = ['data' => $exchangeData, 'dates' => $dates,'currency' => $currency];
         return $data;
     }
 
