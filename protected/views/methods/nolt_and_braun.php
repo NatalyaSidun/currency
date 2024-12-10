@@ -5,18 +5,18 @@
  * Date: 02.03.15
  * Time: 21:13
  */
-$this->title = "Прогноз по методу Хольта и Брауна";
+$this->title = "Прогноз за методом Хольта і Брауна";
 ?>
 <div class="wrap-wait">
     <i class="fa fa-spinner fa-pulse fa-5x"></i>
 </div>
 <div class="content">
         <div class="col-md-12">
-            <h3 class="t1">Прогноз по методу <b>Хольта и Брауна</b> для валютной пары <b><?php echo $curentCureency->title; ?></b></h3>
+            <h3 class="t1">Прогноз методом <b>Хольта і Брауна</b> для валютної пари <b><?php echo $curentCureency->title; ?></b></h3>
             <hr>
         </div>
         <div class="col-md-9 col-md-offset-2">
-            <button type="button"  data-toggle="modal" data-target="#minValues"   class="btn btn-success">Оптимальный прогноз по методу Хольта и Брауна</button>
+            <button type="button"  data-toggle="modal" data-target="#minValues"   class="btn btn-success">Оптимальний прогноз методом Хольта і Брауна</button>
             <br>
             <br>
         </div>
@@ -88,30 +88,30 @@ $this->title = "Прогноз по методу Хольта и Брауна";
             <div id="datepicker-holt"></div>
             <div class="dop-btns">
                 <div class="btn-group">
-                    <a class="btn btn-default" data-toggle="modal" data-target="#myModal" href="javascript:void(0)" title="Информация о методе Хольта и Брауна">
+                    <a class="btn btn-default" data-toggle="modal" data-target="#myModal" href="javascript:void(0)" title="Інформація про метод Хольта і Брауна">
                             <span class="p-t-5 p-b-5">
                             <i class="fa fa-question"></i>
                             </span>
                             <br>
-                            <span class="fs-11 font-montserrat text-uppercase lab">Справка</span>
+                            <span class="fs-11 font-montserrat text-uppercase lab">Довідка</span>
                     </a>
                 </div>
                 <div class="btn-group">
-                    <a class="btn btn-default openPopup" data-toggle="modal" data-target="#dataTable" href="javascript:void(0)" title="Посмотреть результаты в виде таблицы">
+                    <a class="btn btn-default openPopup" data-toggle="modal" data-target="#dataTable" href="javascript:void(0)" title="Подивитись результати у вигляді таблиці">
                             <span class="p-t-5 p-b-5">
                             <i class="fa fa-table"></i>
                             </span>
                             <br>
-                            <span class="fs-11 font-montserrat text-uppercase lab">Таблица</span>
+                            <span class="fs-11 font-montserrat text-uppercase lab">Таблиця</span>
                     </a>
                 </div>
                 <div class="btn-group">
-                    <a class="btn btn-default openPopup" href="javascript:void(0)" title="Сохранить отчет по методу">
+                    <a class="btn btn-default openPopup" href="javascript:void(0)" title="Зберегти звіт за методом">
                             <span class="p-t-5 p-b-5">
                             <i class="fa fa-floppy-o"></i>
                             </span>
                             <br>
-                            <span class="fs-11 font-montserrat text-uppercase lab">Отчет</span>
+                            <span class="fs-11 font-montserrat text-uppercase lab">Звіт</span>
                     </a>
                 </div>
             </div>
@@ -124,24 +124,24 @@ $this->title = "Прогноз по методу Хольта и Брауна";
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Метод Хольта Брауна</h4>
+                    <h4 class="modal-title" id="myModalLabel">Метод Хольта і Брауна</h4>
                 </div>
                 <div class="modal-body">
-                    <p> В середине прошлого века Хольт предложил усовершенствованный метод экспоненциального сглаживания, впоследствии названный его именем. В предложенном алгоритме значения уровня и тренда сглаживаются с помощью экспоненциального сглаживания. Причем параметры сглаживания у них различны. </p>
+                    <p>У середині минулого століття Хольт запропонував удосконалений метод експоненційного згладжування, який згодом був названий його іменем. У запропонованому алгоритмі значення рівня та тренду згладжуються за допомогою експоненційного згладжування, причому параметри згладжування для них відрізняються. </p>
 
-                    <p>Первое уравнение описывает сглаженный ряд для прогнозного значения Y на момент времени t с использованием информации на момент времени t–1.</p>
+                    <p>Перше рівняння описує згладжений ряд для прогнозного значення Y на момент часу t з використанням інформації на момент часу t–1.</p>
                     <img src="/img/holt1.gif"/>
-                    <p>где α – постоянная сглаживания; Yпрогн., t, Yпрогн., t–1 – прогнозные значения показателя в последующий и предыдущий момент времени; Yt – табличное значение показателя в момент времени t; Тt–1 – значение тренда на момент времени t–1, которое определяется из второго уравнения.</p>
+                    <p>де α – константа згладжування; Yпрогн., t, Yпрогн., t–1 – прогнозні значення показника у наступний та попередній моменти часу; Yt – табличне значення показника у момент часу t; Тt–1 – значення тренду на момент часу t–1, яке визначається з другого рівняння.</p>
                     <p></p>
-                    <p>Второе уравнение служит для оценки тренда:</p>
+                    <p>Друге рівняння використовується для оцінки тренду:</p>
                     <img src="/img/holt2.gif"/>
-                    <p>где β – постоянная сглаживания. Для определения прогноза на p отсчетов по времени используется третье уравнение:</p>
+                    <p>де β – константа згладжування. Для визначення прогнозу на p відліків часу використовується третє рівняння:</p>
                     <p></p>
                     <img src="/img/holt3.gif"/>
-                    <p>Частным случаем метода Хольта является метод Брауна, когда α = β. Постоянные сглаживания α и β подбираются путем перебора с определенным шагом. При более высоких значениях α в большей степени учитываются прошлые значения ряда; аналогично более высокие значения β оценивают прошлое движение процесса по сравнению с существующим.</p>
+                    <p>Приватним випадком методу Хольта є метод Брауна, коли α = β. Константи згладжування α та β підбираються шляхом перебору з певним кроком. При вищих значеннях α більшою мірою враховуються минулі значення ряду; аналогічно, вищі значення β оцінюють минулі зміни процесу у порівнянні з поточними.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрити</button>
                 </div>
             </div>
         </div>
@@ -298,14 +298,14 @@ $this->title = "Прогноз по методу Хольта и Брауна";
                         </tr>
                     </tbody>
                 </table>
-                <p> На основе оптимального прогноза на <span class="optDate"><?php echo $minValuesHolt->date;?></span>  можно сделать предположение,
-                    что оптимальный прогноз для метода Хольта и Брауна считается с коеффициентом <span class="optKoef"> <?php echo $minValuesHolt->k; ?></span></p>
+                <p> На основі оптимального прогнозу на <span class="optDate"><?php echo $minValuesHolt->date;?></span>  можна зробити припущення,
+                    що оптимальний прогноз методом Хольта і Брауна вираховується з коефіцієнту <span class="optKoef"> <?php echo $minValuesHolt->k; ?></span></p>
 
                 <p><b>Курс <span class="optDate"><?php echo $minValuesHolt->date;?></span> :</b>  <span class="optVal"><?php echo $minValuesHolt->yt." ".$curentCureency->valuta?> за 1$.</span></p>
-                <p><b>Отпимальный прогноз на  <span class="optDateTommorow"><?php echo $dateTommorow;?>:</b>  <?php echo $minValuesHolt->yt_1." ".$curentCureency->valuta?> за 1$.</span></p>
+                <p><b>Оптимальний прогноз на  <span class="optDateTommorow"><?php echo $dateTommorow;?>:</b>  <?php echo $minValuesHolt->yt_1." ".$curentCureency->valuta?> за 1$.</span></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрити</button>
             </div>
         </div>
     </div>

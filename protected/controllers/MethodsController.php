@@ -49,67 +49,6 @@ class MethodsController extends Controller
 
         $dayBefore = $lastDay->date;
         $date1 = str_replace('-', '/', $dayBefore);
-        $dateToday = date('Y-m-d',strtotime($date1 . "+1 days"));
-
-        while($dateToday <= $today){
-
-            $dateTomorrow = date('Y-m-d',strtotime($dateToday . "+1 days"));
-
-            switch($id_currency){  //в зависимости от валюті на сколько округлять
-                case 1:
-                    $round = 2;
-                    break;
-                case 2:
-                    $round = 4;
-                    break;
-                case 3:
-                    $round = 1;
-                    break;
-                case 4:
-                    $round = 4;
-                    break;
-            }
-
-            $valueForThisDay = ExchangeRates::find()
-                ->where(["date" => $dateToday, "id_currency" => $id_currency])
-                ->one();
-
-            die('<pre>' . print_r($valueForThisDay, true) . '</pre>');
-            $valueForThisDay = $valueForThisDay->value;
-
-            for($alpha=0.1; $alpha<=0.9; $alpha=$alpha+0.1){
-                $beta = $alpha;
-                $valueForDayBefore = ForecastsHolt::find()
-                    ->where(["id_currency" => $id_currency, "date" => $dayBefore, "k" => $alpha])->one();
-
-                if($valueForThisDay > $valueForDayBefore->yt_1){
-                    $diff = $valueForThisDay - $valueForDayBefore->yt_1;
-                }else{
-                    $diff = $valueForDayBefore->yt_1 - $valueForThisDay;
-                }
-                $e = $diff*100/$valueForThisDay;
-
-                $Yprognoz_t = $alpha*($valueForDayBefore->yt_prognoz+$valueForDayBefore->trend)+(1-$alpha)*$valueForThisDay;
-                $trend = (1-$beta)*($Yprognoz_t - $valueForDayBefore->yt_prognoz)+$beta*$valueForDayBefore->trend;
-                $prognozTomorrow = $Yprognoz_t+$trend;
-
-                $forecast_holt = new ForecastsHolt();
-                $forecast_holt->date = $dateToday;
-                $forecast_holt->id_currency = $id_currency;
-                $forecast_holt->k = $alpha;
-                $forecast_holt->e = round($e, 2);
-                $forecast_holt->yt = $valueForThisDay;
-                $forecast_holt->yt_prognoz = round($Yprognoz_t, $round);
-                $forecast_holt->trend = round($trend, $round);
-                $forecast_holt->yt_1 = round($prognozTomorrow, $round);
-                $forecast_holt->save();  // equivalent to $customer->insert();
-            }
-
-
-            $dayBefore = $dateToday;
-            $dateToday = $dateTomorrow;
-        }
-
         $lastDay = ForecastsHolt::find()
             ->where(["id_currency" => $id_currency, "date" => $today])
             ->orderBy('k ASC')
@@ -151,11 +90,63 @@ class MethodsController extends Controller
         if(!$session['cur_id']){
             $session['cur_id'] = 1;
         }
-        $today = date("Y-m-d");
-
-        $curentCureency = Currencies::find()->where(["id" => $session['cur_id']])->one();
         $id_currency = $session['cur_id'];
-    }
+        switch($id_currency){  //в зависимости от валюті на сколько округлять
+            case 1:
+                $round = 2;
+                $start = 40.0;
+                break;
+            case 2:
+                $round = 4;
+                $start = 0.95;
+                break;
+            case 3:
+                $round = 1;
+                $start = 0;
+                break;
+            case 4:
+                $round = 4;
+                $start = 0.9;
+                break;
+        }
+
+            $values = ExchangeRates::find()
+                ->where(["id_currency" => $id_currency])
+                ->all();
+            foreach ($values as $valueForThisDay) {
+                $rateForThisDate = $valueForThisDay->value;
+                $dayBefore = date( "Y-m-d" , strtotime($valueForThisDay->date . " +1 day")); ;
+                for ($alpha = 0.1; $alpha <= 0.9; $alpha = $alpha + 0.1){
+                    $beta = $alpha;
+                    $valueForDayBefore = ForecastsHolt::find()
+                        ->where(["id_currency" => $id_currency, "date" => $dayBefore, "k" => $alpha])->one();
+                    $rateDayBefore = $valueForDayBefore ? $valueForDayBefore->yt_1 : $start;
+                    $prognozDayBefore = $valueForDayBefore ? $valueForDayBefore->yt_prognoz : $start;
+                    $trendDayBefore =  $valueForDayBefore ? $valueForDayBefore->trend : 0;
+                    if($rateForThisDate > $rateDayBefore){
+                        $diff = $rateForThisDate - $rateDayBefore;
+                    }else{
+                        $diff = $rateDayBefore - $rateForThisDate;
+                    }
+                    $e = $diff * 100 / $rateForThisDate;
+
+                    $Yprognoz_t = $alpha * ($prognozDayBefore + $trendDayBefore) + (1-$alpha) * $rateForThisDate;
+                    $trend = (1 - $beta) * ($Yprognoz_t - $prognozDayBefore) + $beta * $trendDayBefore;
+                    $prognozTomorrow = $Yprognoz_t + $trend;
+
+                    $forecast_holt = new ForecastsHolt();
+                    $forecast_holt->date = $valueForThisDay->date;
+                    $forecast_holt->id_currency = $id_currency;
+                    $forecast_holt->k = $alpha;
+                    $forecast_holt->e = round($e, $round);
+                    $forecast_holt->yt = $rateForThisDate;
+                    $forecast_holt->yt_prognoz = round($Yprognoz_t, $round);
+                    $forecast_holt->trend = round($trend, $round);
+                    $forecast_holt->yt_1 = round($prognozTomorrow, $round);
+                    $forecast_holt->save();  // equivalent to $customer->insert();
+                }
+            }
+        }
 
     public function  actionVinters(){
 
