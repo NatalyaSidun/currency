@@ -79,7 +79,7 @@ class CurrenciesController extends Controller
         if(!$exchangeLastRate || $exchangeLastRate[0]->date < $today){
 
 
-            $url = "https://query1.finance.yahoo.com/v8/finance/chart/EUR=X?period1=1671404400&period2=1733353200&interval=1d&includePrePost=true&events=div%7Csplit%7Cearn&useYfid=true&lang=en-US&region=US";
+            $url = "https://query1.finance.yahoo.com/v8/finance/chart/EUR=X?period1=1671404400&period2=" . time() . "&interval=1d&includePrePost=true&events=div%7Csplit%7Cearn&useYfid=true&lang=en-US&region=US";
             // Initialize cURL session
             $ch = curl_init($url);
 
@@ -114,7 +114,7 @@ class CurrenciesController extends Controller
                 $exchange_rates->save();  // equivalent to $customer->insert();
             }
 
-            $url = "https://query1.finance.yahoo.com/v8/finance/chart/EUR=X?period1=1671404400&period2=1733353200&interval=1d&includePrePost=true&events=div%7Csplit%7Cearn&useYfid=true&lang=en-US&region=US";
+            $url = "https://query1.finance.yahoo.com/v8/finance/chart/EUR=X?period1=1671404400&period2=" . time() . "&interval=1d&includePrePost=true&events=div%7Csplit%7Cearn&useYfid=true&lang=en-US&region=US";
             // Initialize cURL session
             $ch = curl_init($url);
 
@@ -148,7 +148,7 @@ class CurrenciesController extends Controller
                 $exchange_rates->save();  // equivalent to $customer->insert();
             }
 
-            $url = "https://query1.finance.yahoo.com/v8/finance/chart/UAH=X?period1=1673823600&period2=1733353200&interval=1d&includePrePost=true&events=div%7Csplit%7Cearn&useYfid=true&lang=en-US&region=US";
+            $url = "https://query1.finance.yahoo.com/v8/finance/chart/UAH=X?period1=1673823600&period2=" . time() . "&interval=1d&includePrePost=true&events=div%7Csplit%7Cearn&useYfid=true&lang=en-US&region=US";
             // Initialize cURL session
             $ch = curl_init($url);
 

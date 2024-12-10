@@ -278,7 +278,7 @@ $this->title = "Прогноз по методу Хольта и Брауна";
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Оптимальный прогноза для валютной пары <?php echo $curentCureency->title;?> по методу Хольта и Брауна</h4>
+                <h4 class="modal-title" id="myModalLabel">Оптимальний прогноз для валютної пари <?php echo $curentCureency->title;?> по методу Хольта и Брауна</h4>
             </div>
             <div class="modal-body">
                 <p>Оптимальный прогноз на <span class="optDate"><?php echo $minValuesHolt->date;?></span></p>

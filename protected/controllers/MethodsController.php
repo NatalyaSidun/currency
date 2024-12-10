@@ -144,6 +144,19 @@ class MethodsController extends Controller
         ]);
     }
 
+    public function actionCalculateHolt(){
+        $session = new Session();
+        $session->open();
+
+        if(!$session['cur_id']){
+            $session['cur_id'] = 1;
+        }
+        $today = date("Y-m-d");
+
+        $curentCureency = Currencies::find()->where(["id" => $session['cur_id']])->one();
+        $id_currency = $session['cur_id'];
+    }
+
     public function  actionVinters(){
 
         $session = new Session();
@@ -401,7 +414,7 @@ class MethodsController extends Controller
         ]);
     }
 
-    public function  actionMedium(){
+    public function  actionMedium() {
         $session = new Session();
         $session->open();
 
@@ -418,7 +431,12 @@ class MethodsController extends Controller
             ->orderBy('date DESC')
             ->limit(1)
             ->one();
-        $dayBefore = $lastDay->date;
+        if ($lastDay) {
+            $dayBefore = $lastDay->date;
+        } else {
+            $dayBefore = date("Y-m-d",strtotime( "1 days"));
+        }
+
         $date1 = str_replace('-', '/', $dayBefore);
         $dateToday = date('Y-m-d',strtotime($date1 . "+1 days"));
         switch($id_currency){  //в зависимости от валюті на сколько округлять
@@ -436,50 +454,16 @@ class MethodsController extends Controller
                 break;
         }
 
-        while($dateToday <= $today){
-            $dateTomorrow = date('Y-m-d',strtotime($dateToday . "+1 days"));
-
-            $valueForThisDay = ExchangeRates::find()
-                ->where(["date" => $dateToday, "id_currency" => $id_currency])
-                ->one();
-
-            $valueForThisDay = $valueForThisDay->value;
-
-            for($alpha=0.1; $alpha<=0.9; $alpha=$alpha+0.1){
-
-                $valueForDayBefore = ForecastsMedium::find()
-                    ->where(["id_currency" => $id_currency, "date" => $dayBefore, "a" => $alpha])->one();
-
-                if($valueForThisDay > $valueForDayBefore->yt_1){
-                    $diff = $valueForThisDay - $valueForDayBefore->yt_1;
-                }else{
-                    $diff = $valueForDayBefore->yt_1 - $valueForThisDay;
-                }
-                $e = $diff*100/$valueForThisDay;
-
-                $yt_1=$alpha*$valueForThisDay+(1-$alpha)*$valueForDayBefore->yt_1;
-
-                $forecast_medium = new ForecastsMedium();
-                $forecast_medium->date = $dateToday;
-                $forecast_medium->id_currency = $id_currency;
-                $forecast_medium->a = $alpha;
-                $forecast_medium->e = round($e, 2);
-                $forecast_medium->yt = $valueForThisDay;
-                $forecast_medium->yt_1 = round($yt_1, $round);
-                $forecast_medium->save();  // equivalent to $customer->insert();
-            }
-
-            $dayBefore = $dateToday;
-            $dateToday = $dateTomorrow;
-        }
-
         $lastDay = ForecastsMedium::find()
             ->where(["id_currency" => $id_currency, "date" => $today])
             ->orderBy('a ASC')
             ->limit(9)
             ->all();
-
-        $date1 = str_replace('-', '/', $lastDay[0]->date);
+        if ($lastDay) {
+            $date1 = str_replace('-', '/', $lastDay[0]->date);
+        } else {
+            $date1 = date("Y/m/d",strtotime( $today ));
+        }
         $dateYesterday = date('Y-m-d',strtotime($date1 . "-1 days"));
 
         $valuesForDayBefore = ForecastsMedium::find()
@@ -487,8 +471,11 @@ class MethodsController extends Controller
             ->orderBy('a ASC')
             ->limit(9)
             ->all();
-
-        $date1 = str_replace('-', '/', $lastDay[0]->date);
+        if ($lastDay) {
+            $date1 = str_replace('-', '/', $lastDay[0]->date);
+        } else {
+            $date1 = date("Y/m/d",strtotime( $today ));
+        }
         $dateTomorrow = date('Y-m-d',strtotime($date1 . "+1 days"));
 
         $minValuesMedium =  ForecastsMedium::find()
@@ -506,6 +493,68 @@ class MethodsController extends Controller
             "curentCureency" =>$curentCureency
         ]);
     }
+
+    public function actionCalculateMedium() {
+        $session = new Session();
+        $session->open();
+
+        if(!$session['cur_id']){
+            $session['cur_id'] = 1;
+        }
+        $id_currency = $session['cur_id'];
+        switch($id_currency){  //в зависимости от валюті на сколько округлять
+            case 1:
+                $round = 2;
+                $start = 40.0;
+                break;
+            case 2:
+                $round = 4;
+                $start = 0.95;
+                break;
+            case 3:
+                $round = 1;
+                $start = 0;
+                break;
+            case 4:
+                $round = 4;
+                $start = 0.9;
+                break;
+        }
+
+            $values = ExchangeRates::find()
+                ->where(["id_currency" => $id_currency])
+                ->orderBy("date ASC")
+                ->all();
+            foreach ($values as $valueForThisDay) {
+                echo '<pre>' . print_r($valueForThisDay, true) . '</pre>';
+                //die();
+                $rateForThisDay = $valueForThisDay->value;
+                $dayBefore = date( "Y-m-d" , strtotime($valueForThisDay->date . " +1 day")); ;
+                for( $alpha = 0.1; $alpha <= 0.9; $alpha = $alpha + 0.1) {
+
+                    $valueForDayBefore = ForecastsMedium::find()
+                        ->where(["id_currency" => $id_currency, "date" => $dayBefore, "a" => $alpha])->one();
+                    $rateDayBefore = $valueForDayBefore ? $valueForDayBefore->yt_1 : $start;
+                    if ($rateForThisDay > $rateDayBefore){
+                        $diff = $rateForThisDay - $rateDayBefore;
+                    } else {
+                        $diff = $rateDayBefore- $rateForThisDay;
+                    }
+                    $e = $diff * 100 / $rateForThisDay;
+
+                    $yt_1=$alpha * $rateForThisDay + (1-$alpha) * $rateDayBefore;
+
+                    $forecast_medium = new ForecastsMedium();
+                    $forecast_medium->date = $valueForThisDay->date;
+                    $forecast_medium->id_currency = $id_currency;
+                    $forecast_medium->a = $alpha;
+                    $forecast_medium->e = round($e, 2);
+                    $forecast_medium->yt = $rateForThisDay;
+                    $forecast_medium->yt_1 = round($yt_1, $round);
+                    $forecast_medium->save();  // equivalent to $customer->insert();
+                }
+            }
+        }
 
     public function  actionFindOptimal(){
         $session = new Session();

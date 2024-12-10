@@ -28,16 +28,16 @@ $this->title = "Оптимальный прогноз";
 <!--            -->
 <!--        </div>-->
 
-    <p class="t2"><b>Расчет ошибки на <?php echo $lastValuesMedium[0]->date; ?> для валютной пары <b><?php echo $curentCureency->title; ?></b></p>
-    <p class="t5 label label-success"><b>По методу скользящего среднего</b></p>
+    <p class="t2"><b>Розрахунок помилки <?php echo $lastValuesMedium[0]->date; ?> для валютної пари <b><?php echo $curentCureency->title; ?></b></p>
+    <p class="t5 label label-success"><b>Методом ковзного середнього</b></p>
 
     <table class="table table-striped">
         <thead>
         <tr>
             <th>k</th>
             <th>Прогноз на <?php echo $lastValuesMedium[0]->date; ?></th>
-            <th>Значение курса <?php echo $lastValuesMedium[0]->date; ?></th>
-            <th>Ошибка</th>
+            <th>Значення курсу <?php echo $lastValuesMedium[0]->date; ?></th>
+            <th>Помилка</th>
             <th>Прогноз на <?php echo $dateTommorow; ?></th>
         </tr>
         </thead>
@@ -54,15 +54,15 @@ $this->title = "Оптимальный прогноз";
         </tbody>
     </table>
 
-    <p class="t5 label label-success"><b>По методу Хольта и Брауна</b></p>
+    <p class="t5 label label-success"><b>Методом Хольта і Брауна</b></p>
 
     <table class="table table-striped">
         <thead>
         <tr>
             <th>k</th>
             <th>Прогноз на <?php echo $lastValuesVinters[0]->date; ?></th>
-            <th>Значение курса <?php echo $lastValuesVinters[0]->date; ?></th>
-            <th>Ошибка</th>
+            <th>Значення курсу <?php echo $lastValuesVinters[0]->date; ?></th>
+            <th>Помилка</th>
             <th>Прогноз на <?php echo $dateTommorow; ?></th>
         </tr>
         </thead>
@@ -79,7 +79,7 @@ $this->title = "Оптимальный прогноз";
         </tbody>
     </table>
 
-    <p class="t5  label label-success"><b>По методу Винтерса</b></p>
+    <p class="t5  label label-success"><b>Методом Вінтерса</b></p>
 
     <table class="table table-striped">
         <thead>
@@ -87,8 +87,8 @@ $this->title = "Оптимальный прогноз";
             <th>k</th>
             <th>q</th>
             <th>Прогноз на <?php echo $lastValuesVinters[0]->date; ?></th>
-            <th>Значение курса <?php echo $lastValuesVinters[0]->date; ?></th>
-            <th>Ошибка</th>
+            <th>Значення курсу <?php echo $lastValuesVinters[0]->date; ?></th>
+            <th>Помилка</th>
             <th>Прогноз на <?php echo $dateTommorow; ?></th>
         </tr>
         </thead>
@@ -112,21 +112,21 @@ $this->title = "Оптимальный прогноз";
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Оптимальный прогноз</h4>
+                <h4 class="modal-title" id="myModalLabel">Оптимальний прогноз</h4>
             </div>
             <div class="modal-body">
                 <div class="recomendation">
-                    <p> На основе оптимального прогноза на вчера можно сделать предположение,
-                    что оптимальный прогноз считается по <b> методу <?php echo $method;?> с <?php echo $koef; ?></b></p>
+                    <p> На основі оптимального прогнозу на вчора можна зробити припущення,
+                    що оптимальний прогноз по  <b> методу <?php echo $method;?> з <?php echo $koef; ?></b></p>
                     <hr/>
-                    <p>Курс сегодня :<b> <?php echo $minValues->yt." ".$curentCureency->valuta?> за 1$.</b></p>
-                    <p>Отпимальный прогноз на <?php echo $dateTommorow; ?>:<b>  <?php echo $minValues->yt_1." ".$curentCureency->valuta?> за 1$.</b></p>
-                    <p>Тренд:<b class="red"> Курс валют будет <?php echo $trend; ?></b></p>
-                    <p>Совет от программы:<b class="red"> Чтобы заработать, валюту лучше сегодня <?php echo $advice; ?></b> </p>
+                    <p>Курс сьогодні :<b> <?php echo $minValues->yt." ".$curentCureency->valuta?> за 1$.</b></p>
+                    <p>Оптимальний прогноз на <?php echo $dateTommorow; ?>:<b>  <?php echo $minValues->yt_1." ".$curentCureency->valuta?> за 1$.</b></p>
+                    <p>Тренд:<b class="red"> Курс валют буде <?php echo $trend; ?></b></p>
+                    <p>Порада від програми:<b class="red"> ЩЩоб заробити, валюту сюогодні краще  <?php echo $advice; ?></b> </p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закритти</button>
             </div>
         </div>
     </div>

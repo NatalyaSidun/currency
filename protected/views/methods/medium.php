@@ -1,22 +1,22 @@
-Ï<?php
+<?php
 /**
  * Created by PhpStorm.
  * User: Екатерина
  * Date: 02.03.15
  * Time: 21:13
  */
-$this->title = "Прогноз по методу скользящего среднего";
+$this->title = "Прогноз методом ковзного середнього";
 ?>
 <div class="wrap-wait">
     <i class="fa fa-spinner fa-pulse fa-5x"></i>
 </div>
 <div class="content">
         <div class="col-md-12">
-            <h3 class="t1">Прогноз по методу <b>скользящего среднего</b> для валютной пары <b><?php echo $curentCureency->title; ?></b></h3>
+            <h3 class="t1">Прогноз методом <b>ковзного середнього</b> для валютної пари <b><?php echo $curentCureency->title; ?></b></h3>
             <hr>
         </div>
         <div class="col-md-9 col-md-offset-2">
-            <button type="button"  data-toggle="modal" data-target="#minValues"   class="btn btn-success">Оптимальный прогноз по методу скользящего среднего</button>
+            <button type="button"  data-toggle="modal" data-target="#minValues"   class="btn btn-success">Оптимальний прогноз методом ковзного середнього</button>
             <br>
             <br>
         </div>
@@ -88,30 +88,30 @@ $this->title = "Прогноз по методу скользящего сред
             <div id="datepicker-medium"></div>
             <div class="dop-btns">
                 <div class="btn-group">
-                    <a class="btn btn-default" data-toggle="modal" data-target="#myModal" href="javascript:void(0)" title="Информация о методе скользящего среднего">
+                    <a class="btn btn-default" data-toggle="modal" data-target="#myModal" href="javascript:void(0)" title="Інформація про метод ковзного середнього">
                             <span class="p-t-5 p-b-5">
                             <i class="fa fa-question"></i>
                             </span>
                             <br>
-                            <span class="fs-11 font-montserrat text-uppercase lab">Справка</span>
+                            <span class="fs-11 font-montserrat text-uppercase lab">Довідка</span>
                     </a>
                 </div>
                 <div class="btn-group">
-                    <a class="btn btn-default openPopup" data-toggle="modal" data-target="#dataTable" href="javascript:void(0)" title="Посмотреть результаты в виде таблицы">
+                    <a class="btn btn-default openPopup" data-toggle="modal" data-target="#dataTable" href="javascript:void(0)" title="Подивитись результати у вигляді таблиці">
                             <span class="p-t-5 p-b-5">
                             <i class="fa fa-table"></i>
                             </span>
                             <br>
-                            <span class="fs-11 font-montserrat text-uppercase lab">Таблица</span>
+                            <span class="fs-11 font-montserrat text-uppercase lab">Таблиця</span>
                     </a>
                 </div>
                 <div class="btn-group">
-                    <a class="btn btn-default openPopup" href="javascript:void(0)" title="Сохранить отчет по методу">
+                    <a class="btn btn-default openPopup" href="javascript:void(0)" title="Зберегти звіт за методом">
                             <span class="p-t-5 p-b-5">
                             <i class="fa fa-floppy-o"></i>
                             </span>
                             <br>
-                            <span class="fs-11 font-montserrat text-uppercase lab">Отчет</span>
+                            <span class="fs-11 font-montserrat text-uppercase lab">Звіт</span>
                     </a>
                 </div>
             </div>
@@ -126,19 +126,19 @@ $this->title = "Прогноз по методу скользящего сред
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="myModalLabel">Расчет прогноза на <?php echo $dateTommorow; ?> по методу скользящих средних с коэффициентом <?php echo $prognoz[$i]->a; ?></h4>
+                                <h4 class="modal-title" id="myModalLabel">Розрахунок прогнозу на  <?php echo $dateTommorow; ?> методом ковзних середніх з коефіцієнтом <?php echo $prognoz[$i]->a; ?></h4>
                             </div>
                             <div class="modal-body">
                                 <p>Y<small>t+1</small>=a*Y<small>t</small>+(1-a)*^Y<small>t</small></p>
-                                <p>где Yt+1– прогноз на следующий период времени </p>
-                                <p>Yt – реальное значение в момент времени t </p>
-                                <p>^Yt – прошлый прогноз на момент времени t </p>
-                                <p>a – постоянная сглаживания (0<=a<=1) </p>
-                                <p class="t4"><b>Значения на <?php echo $valuesForDayBefore[$i]->date;?> для k=<?php echo $valuesForDayBefore[$i]->a;?></b></p>
+                                <p>где Yt+1– прогноз наступний період часу </p>
+                                <p>Yt – реальне значення в момент  t </p>
+                                <p>^Yt – минулий прогноз на момент t </p>
+                                <p>a – константа згладження (0<=a<=1) </p>
+                                <p class="t4"><b>Значення на <?php echo $valuesForDayBefore[$i]->date;?> для k=<?php echo $valuesForDayBefore[$i]->a;?></b></p>
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>Значение курса</th>
+                                        <th>Значення курсу</th>
                                         <th>Прогноз</th>
                                     </tr>
                                     </thead>
@@ -149,14 +149,14 @@ $this->title = "Прогноз по методу скользящего сред
                                     </tr>
                                     </tbody>
                                 </table>
-                                <p class="t3"><b>Рассмотрим подробнее</b></p>
-                                <p>Находим прогноз на <?php echo $dateTommorow; ?> </p>
+                                <p class="t3"><b>Розглянемо детальніше</b></p>
+                                <p>Вираховуємо прогноз на <?php echo $dateTommorow; ?> </p>
                                 <p> Y<small>t+1</small>=a*Y<small>t</small>+(1-a)*^Y<small>t</small> = </p>
                                 <p><?php echo $prognoz[$i]->a." * ".$prognoz[$i]->yt." + (1 - a) * ".$valuesForDayBefore[$i]->yt_1. " = ".$prognoz[$i]->yt_1;?> <?php echo $curentCureency->valuta?> за 1$</p>
 
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрити</button>
                             </div>
                         </div>
                     </div>
@@ -170,26 +170,25 @@ $this->title = "Прогноз по методу скользящего сред
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Метод Скользящего среднего</h4>
+                    <h4 class="modal-title" id="myModalLabel">Метод ковзного середнього</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Самой простой моделью, основанной на простом усреднении является </p>
+                    <p>Найпростішою моделлю, заснованою на простому усередненні, є </p>
                     <p><b>Y(t+1)=(1/(t))*[Y(t)+Y(t-1)+...+Y(1)], </b></p>
-                    <p>и в отличии от самой простой "наивной" модели, которой соответствовал принцип "завтра будет как сегодня", этой модели соответствует принцип "завтра будет как было в среднем за последнее время". Такая модель, конечно более устойчива к флуктуациям, поскольку в ней сглаживаются случайные выбросы относительно среднего. Несмотря на это, этот метод идеологически настолько же примитивен как и "наивные" модели и ему свойственны почти те же самые недостатки. </p>
+                    <p>і на відміну від найпростішої "наївної" моделі, якій відповідав принцип "завтра буде так само, як сьогодні", цій моделі відповідає принцип "завтра буде так, як було в середньому за останній час". Така модель, звісно, більш стійка до флуктуацій, оскільки в ній згладжуються випадкові викиди відносно середнього. Незважаючи на це, цей метод ідеологічно настільки ж примітивний, як і "наївні" моделі, і йому притаманні майже ті самі недоліки. </p>
 
-                    <p>В приведенной выше формуле предполагалось, что ряд усредняется по достаточно длительному интервалу времени. Однако как правило, значения временного ряда из недалекого прошлого лучше описывают прогноз, чем более старые значения этого же ряда. Тогда можно использовать для прогнозирования скользящее среднее </p>
+                    <p>У наведеній вище формулі припускалося, що ряд усереднюється за достатньо тривалий інтервал часу. Проте, як правило, значення часових рядів із недалекого минулого краще описують прогноз, ніж більш старі значення цього ж ряду. Тоді можна використовувати для прогнозування ковзне середнє </p>
                     <p><b>Y(t+1)=(1/(T+1))*[Y(t)+Y(t-1)+...+Y(t-T)], </b></p>
-                    <p>Смысл его заключается в том, что модель видит только ближайшее прошлое (на T отсчетов по времени в глубину) и основываясь только на этих данных строит прогноз. </p>
+                    <p>Суть його полягає в тому, що модель "бачить" лише найближче минуле (на T відліків часу вглиб) і, спираючись лише на ці дані, формує прогноз. </p>
 
-                    <p> При прогнозировании довольно часто используется метод экспоненциальных средних, который постоянно адаптируется к данным за счет новых значений. Формула, описывающая эту модель записывается как </p>
+                    <p>При прогнозуванні досить часто використовується метод експоненційних середніх, який постійно адаптується до даних завдяки новим значенням. Формула, що описує цю модель, записується як </p>
                     <p><b>Y(t+1)=a*Y(t)+(1-a)*^Y(t), </b></p>
-                    <p>где Y(t+1) – прогноз на следующий период времени </p>
-                    <p>Y(t) – реальное значение в момент времени t </p>
-                    <p>^Y(t) – прошлый прогноз на момент времени t </p>
-                    <p>a – постоянная сглаживания (0<=a<=1)) </p>
-                    <p>В этом методе есть внутренний параметр a, который определяет зависимость прогноза от более старых данных, причем влияние данных на прогноз экспоненциально убывает с "возрастом" данных. Зависимость влияния данных на прогноз при разных коэффициентах a приведена на графике. </p>
-
-                </div>
+                    <p>де Y(t+1) – прогноз на наступний період часу </p>
+                    <p>Y(t) – реальне значення в момент часу t </p>
+                    <p>^Y(t) – минулий прогноз на момент часу t </p>
+                    <p>a – константа згладжування (0<=a<=1) </p>
+                    <p>У цьому методі є внутрішній параметр a, який визначає залежність прогнозу від більш старих даних, причому вплив даних на прогноз експоненційно зменшується з "віком" даних. Залежність впливу даних на прогноз при різних коефіцієнтах a наведено на графіку. </p>
+                    </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                 </div>
@@ -204,7 +203,7 @@ $this->title = "Прогноз по методу скользящего сред
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Результаты расчета прогноза для валютной пары <?php echo $curentCureency->title;?> по методу скользящего среднего</h4>
+                        <h4 class="modal-title" id="myModalLabel">Результати розрахунків для валютної пари <?php echo $curentCureency->title;?> методом ковзного середнього</h4>
                     </div>
                     <div class="modal-body">
                         <table class="table table-striped">
@@ -227,7 +226,7 @@ $this->title = "Прогноз по методу скользящего сред
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Закрити</button>
                     </div>
                 </div>
             </div>
@@ -262,34 +261,34 @@ $this->title = "Прогноз по методу скользящего сред
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Оптимальный прогноза для валютной пары <?php echo $curentCureency->title;?> по методу скользящего среднего</h4>
+                <h4 class="modal-title" id="myModalLabel">Оптимальний прогноз для валютної пари <?php echo $curentCureency->title;?> методом ковзного середнього</h4>
             </div>
             <div class="modal-body">
-                <p>Оптимальный прогноз на <span class="optDate"><?php echo $minValuesMedium->date;?></span></p>
+                <p>Оптимальний прогноз на <span class="optDate"><?php echo  $minValuesMedium ? $minValuesMedium->date : date('Y-m-d');?></span></p>
                 <table class="table table-striped">
                     <thead>
                     <tr>
                         <th>a</th>
                         <th>Прогноз</th>
-                        <th>Ошибка</th>
+                        <th>Помилка</th>
                     </tr>
                     </thead>
                     <tbody class="bodyInn">
                     <tr>
-                        <td><?php echo $minValuesMedium->a;?></td>
-                        <td><?php echo $minValuesMedium->yt_1;?> <?php echo $curentCureency->valuta?></td>
-                        <td><?php echo $minValuesMedium->e;?> % </td>
+                        <td><?php echo $minValuesMedium ?  $minValuesMedium->a : '';?></td>
+                        <td><?php echo $minValuesMedium ? $minValuesMedium->yt_1 : '';?> <?php echo $curentCureency->valuta?></td>
+                        <td><?php echo $minValuesMedium ? $minValuesMedium->e : '';?> % </td>
                     </tr>
                     </tbody>
                 </table>
-                <p> На основе оптимального прогноза на <span class="optDate"><?php echo $minValuesMedium->date;?></span>  можно сделать предположение,
-                    что оптимальный прогноз для метода Хольта и Брауна считается с коэффициентом <span class="optKoef"> <?php echo $minValuesMedium->a; ?></span></p>
+                <p> На основі оптимального прогнозу на <span class="optDate"><?php echo $minValuesMedium ? $minValuesMedium->date : '';?></span>  можна зробити припущення,
+                    що оптимальний прогноз для методу Хольта і Брауна вираховується з коефіцієнтом <span class="optKoef"> <?php echo $minValuesMedium ? $minValuesMedium->a : ''; ?></span></p>
 
-                <p><b>Курс <span class="optDate"><?php echo $minValuesMedium->date;?></span> :</b>  <span class="optVal"><?php echo $minValuesMedium->yt." ".$curentCureency->valuta?> за 1$.</span></p>
-                <p><b>Отпимальный прогноз на  <span class="optDateTommorow"><?php echo $dateTommorow;?>:</b>  <?php echo $minValuesMedium->yt_1." ".$curentCureency->valuta?> за 1$.</span></p>
+                <p><b>Курс <span class="optDate"><?php echo $minValuesMedium ? $minValuesMedium->date : '';?></span> :</b>  <span class="optVal"><?php echo ($minValuesMedium ? $minValuesMedium->yt : '') ." ". ($curentCureency->valuta ? $curentCureency->valuta : '0,00') ?> за 1$.</span></p>
+                <p><b>Оптимальний прогноз на  <span class="optDateTommorow"><?php echo $dateTommorow ? $dateTommorow : date("Y-m-d", strtotime("+1 day")); ?>:</b>  <?php echo ($minValuesMedium ? $minValuesMedium->yt_1 : '' )." ". ($curentCureency ? $curentCureency->valuta : '0,00') ?> за 1$.</span></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрити</button>
             </div>
         </div>
     </div>
