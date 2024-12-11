@@ -55,7 +55,11 @@ class MethodsController extends Controller
             ->limit(9)
             ->all();
 
-        $date1 = str_replace('-', '/', $lastDay[0]->date);
+        if ($lastDay) {
+            $date1 = str_replace('-', '/', $lastDay[0]->date);
+        } else {
+            $date1 = date('Y/m/d');
+        };
         $dateYesterday = date('Y-m-d',strtotime($date1 . "-1 days"));
 
         $valuesForDayBefore = ForecastsHolt::find()
@@ -63,8 +67,11 @@ class MethodsController extends Controller
             ->orderBy('k ASC')
             ->limit(9)
             ->all();
-
-        $date1 = str_replace('-', '/', $lastDay[0]->date);
+        if ($lastDay) {
+            $date1 = str_replace('-', '/', $lastDay[0]->date);
+        } else {
+            $date1 = date('Y/m/d');
+        };
         $dateTomorrow = date('Y-m-d',strtotime($date1 . "+1 days"));
 
         $minValuesHolt =  ForecastsHolt::find()
@@ -84,13 +91,8 @@ class MethodsController extends Controller
     }
 
     public function actionCalculateHolt(){
-        $session = new Session();
-        $session->open();
-
-        if(!$session['cur_id']){
-            $session['cur_id'] = 1;
-        }
-        $id_currency = $session['cur_id'];
+        $params = Yii::$app->request->queryParams;
+        $id_currency = $params['currency_id'];
         switch($id_currency){  //в зависимости от валюті на сколько округлять
             case 1:
                 $round = 2;
@@ -171,80 +173,6 @@ class MethodsController extends Controller
         $date1 = str_replace('-', '/', $dayBefore);
         $dateToday = date('Y-m-d',strtotime($date1 . "+1 days"));
 
-        switch($id_currency){  //в зависимости от валюті на сколько округлять
-            case 1:
-                $round = 2;
-                break;
-            case 2:
-                $round = 4;
-                break;
-            case 3:
-                $round = 1;
-                break;
-            case 4:
-                $round = 4;
-                break;
-        }
-        $beta = 0.9;
-//        while($dateToday <= "2015-03-20"){
-
-        while($dateToday <= $today){
-
-            $dateTomorrow = date('Y-m-d',strtotime($dateToday . "+1 days"));
-
-            $valueForThisDay = ExchangeRates::find()
-                ->where(["date" => $dateToday, "id_currency" => $id_currency])
-                ->one();
-
-            $valueForThisDay = $valueForThisDay->value;
-
-            for($k=0.1; $k<1; $k=$k+0.2){
-                for($q=0.1; $q<1; $q=$q+0.2){
-                    $valueForDayBefore = ForecastsVinters::find()
-                        ->where(["id_currency" => $id_currency, "date" => $dayBefore, "k"=>$k, "q" => $q])->one();
-
-                    $L_t = $k*($valueForThisDay/$valueForDayBefore->st)+(1-$k)*($valueForDayBefore->lt+$valueForDayBefore->trend);
-                    $trend = $beta*($L_t - $valueForDayBefore->lt)+(1-$beta)*$valueForDayBefore->trend;
-
-                    $dateMinusOneMonth = date('Y-m-d',strtotime($dateToday . "-1 months"));
-                    $valueForMonthBefore = ForecastsVinters::find()
-                        ->where(["id_currency" => $id_currency, "date" => $dateMinusOneMonth, "k"=>$k, "q" => $q])->one();
-                    $s_t = $q*$valueForThisDay/$L_t+(1-$q)*$valueForMonthBefore->st;
-//                      $s_t = 1;
-
-                    $dateTomorrowMinusOneMonth = date('Y-m-d',strtotime($dateTomorrow . "-1 months"));
-                    $valueForTommorowMonthBefore = ForecastsVinters::find()
-                        ->where(["id_currency" => $id_currency, "date" => $dateTomorrowMinusOneMonth, "k"=>$k, "q" => $q])->one();
-
-                  $prognozTomorrow = ($L_t+$trend)*$valueForTommorowMonthBefore->st;
-//                    $prognozTomorrow = ($L_t+$trend)*$s_t;
-
-                    if($valueForThisDay > $valueForDayBefore->yt_1){
-                        $diff = $valueForThisDay - $valueForDayBefore->yt_1;
-                    }else{
-                        $diff = $valueForDayBefore->yt_1 - $valueForThisDay;
-                    }
-                    $e = $diff*100/$valueForThisDay;
-
-                    $forecasts_vinters = new ForecastsVinters();
-                    $forecasts_vinters->date = $dateToday;
-                    $forecasts_vinters->id_currency = $id_currency;
-                    $forecasts_vinters->k = $k;
-                    $forecasts_vinters->q = $q;
-                    $forecasts_vinters->yt = $valueForThisDay;
-                    $forecasts_vinters->lt = round($L_t, $round);
-                    $forecasts_vinters->trend = round($trend, $round);
-                    $forecasts_vinters->st = round($s_t, $round);
-                    $forecasts_vinters->yt_1 = round($prognozTomorrow, $round);
-                    $forecasts_vinters->e = round($e, 2);
-                    $forecasts_vinters->save();  // equivalent to $customer->insert();
-                }
-            }
-
-            $dayBefore = $dateToday;
-            $dateToday = $dateTomorrow;
-        }
-
         $lastDay = ForecastsVinters::find()
             ->where(["id_currency" => $id_currency, "date" => $today])
             ->orderBy('k ASC, q ASC')
@@ -293,6 +221,99 @@ class MethodsController extends Controller
             "curentCureency" =>$curentCureency,
             "minValuesVinters" =>$minValuesVinters
         ]);
+    }
+
+    public function actionCalculateVinters(){
+        $params = Yii::$app->request->queryParams;
+        $id_currency = $params['currency_id'];
+        switch($id_currency){  //в зависимости от валюті на сколько округлять
+            case 1:
+                $round = 2;
+                $start = 40.0;
+                break;
+            case 2:
+                $round = 4;
+                $start = 0.95;
+                break;
+            case 3:
+                $round = 1;
+                $start = 0;
+                break;
+            case 4:
+                $round = 4;
+                $start = 0.9;
+                break;
+        }
+        $beta = 0.9;
+
+
+            $values = ExchangeRates::find()
+                ->where(["id_currency" => $id_currency])
+                ->all();
+            foreach ($values as $valueForThisDay) {
+                $rateForThisDate = $valueForThisDay->value;
+                $dateTomorrow = date('Y-m-d',strtotime($valueForThisDay->date . "+1 days"));
+                $dayBefore = date( "Y-m-d" , strtotime($valueForThisDay->date . " -1 day")); ;
+
+                for($k = 0.1; $k < 1; $k = $k + 0.2){
+                    for($q = 0.1; $q < 1; $q = $q + 0.2){
+                        $valueForDayBefore = ForecastsVinters::find()
+                            ->where(["id_currency" => $id_currency,
+                                "date" => $dayBefore, "k" => $k, "q" => $q])
+                            ->one();
+                        $rateForTheDayBefore = $valueForDayBefore ? $valueForDayBefore->yt_1 : $start;
+                        $rateForTheDayBeforeS = $valueForDayBefore ? $valueForDayBefore->st : $start;
+                        $rateForTheDayBeforeL = $valueForDayBefore ? $valueForDayBefore->lt : $start;
+                        $trenForTheDateBefore = $valueForDayBefore ? $valueForDayBefore->trend : 0;
+                        if (!$rateForTheDayBeforeS) {
+                            $rateForTheDayBeforeS = 1;
+                        }
+                        $L_t = $k * ($rateForThisDate / $rateForTheDayBeforeS) + (1 - $k) * ($rateForTheDayBeforeL + $trenForTheDateBefore);
+                        $trend = $beta * ($L_t - $rateForTheDayBeforeL) + (1 - $beta) * $trenForTheDateBefore;
+
+                        $dateMinusOneMonth = date('Y-m-d',strtotime($valueForThisDay->date . "-1 months"));
+
+                        $valueForMonthBefore = ForecastsVinters::find()
+                            ->where([
+                                "id_currency" => $id_currency,
+                                "date" => $dateMinusOneMonth,
+                                "k" => $k,
+                                "q" => $q])->one();
+                        $rateForMonthBeforeS = $valueForMonthBefore ? $valueForMonthBefore->st : $start;
+                        $s_t = $q * $rateForThisDate / $L_t + (1 - $q) * $rateForMonthBeforeS;
+
+                        $dateTomorrowMinusOneMonth = date('Y-m-d',strtotime($dateTomorrow . "-1 months"));
+                        $valueForTommorowMonthBefore = ForecastsVinters::find()
+                            ->where(["id_currency" => $id_currency,
+                                "date" => $dateTomorrowMinusOneMonth,
+                                "k"=>$k,
+                                "q" => $q])->one();
+                        $rateForTomorrowMonthBeforeS = $valueForTommorowMonthBefore ? $valueForTommorowMonthBefore->st : $start;
+                        $prognozTomorrow = ($L_t + $trend) * $rateForTomorrowMonthBeforeS;
+
+                        if($rateForThisDate > $rateForTheDayBefore) {
+                            $diff = $rateForThisDate - $rateForTheDayBefore;
+                        } else {
+                            $diff = $rateForTheDayBefore - $rateForThisDate;
+                        }
+                        $e = $diff * 100 / $rateForThisDate;
+
+                        $forecasts_vinters = new ForecastsVinters();
+                        $forecasts_vinters->date = $valueForThisDay->date;
+                        $forecasts_vinters->id_currency = $id_currency;
+                        $forecasts_vinters->k = $k;
+                        $forecasts_vinters->q = $q;
+                        $forecasts_vinters->yt = $rateForThisDate;
+                        $forecasts_vinters->lt = round($L_t, $round);
+                        $forecasts_vinters->trend = round($trend, $round);
+                        $forecasts_vinters->st = round($s_t, $round);
+                        $forecasts_vinters->yt_1 = round($prognozTomorrow, $round);
+                        $forecasts_vinters->e = round($e, 2);
+                        $forecasts_vinters->save();  // equivalent to $customer->insert();
+                    }
+                }
+
+            }
     }
 
     public function  actionOptimal(){
@@ -429,21 +450,6 @@ class MethodsController extends Controller
         }
 
         $date1 = str_replace('-', '/', $dayBefore);
-        $dateToday = date('Y-m-d',strtotime($date1 . "+1 days"));
-        switch($id_currency){  //в зависимости от валюті на сколько округлять
-            case 1:
-                $round = 2;
-                break;
-            case 2:
-                $round = 4;
-                break;
-            case 3:
-                $round = 1;
-                break;
-            case 4:
-                $round = 4;
-                break;
-        }
 
         $lastDay = ForecastsMedium::find()
             ->where(["id_currency" => $id_currency, "date" => $today])
@@ -486,13 +492,8 @@ class MethodsController extends Controller
     }
 
     public function actionCalculateMedium() {
-        $session = new Session();
-        $session->open();
-
-        if(!$session['cur_id']){
-            $session['cur_id'] = 1;
-        }
-        $id_currency = $session['cur_id'];
+        $params = Yii::$app->request->queryParams;
+        $id_currency = $params['currency_id'];
         switch($id_currency){  //в зависимости от валюті на сколько округлять
             case 1:
                 $round = 2;
